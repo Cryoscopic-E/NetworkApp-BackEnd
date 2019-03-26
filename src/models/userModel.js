@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        unique: true
     },
     email: {
         type: String,
@@ -48,6 +49,12 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     }
+});
+
+userSchema.virtual('posts', {
+    ref: 'Post',
+    localField: '_id',
+    foreignField: 'creator'
 });
 
 userSchema.methods.generateAuthToken = async function() {
@@ -90,15 +97,35 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
 userSchema.statics.findByProjectName = async (project) => {
     const users = await User.find({ project });
+    if (!users) {
+        throw new Error('Unable to fetch users');
+    }
+    return users;
+}
 
+userSchema.statics.getPostsFromProject = async (project) => {
+    let postsToReturn = []
+    let users = await User.find({ project });
     if (!users) {
         throw new Error('Unable to fetch users');
     }
 
-    return users;
+    for (let user of users) {
+        await user.populate({
+            path: 'posts',
+        }).execPopulate();
+        if (user.posts.length > 0) {
+            let toAdd = []
+            for (let post of user.posts) {
+                toAdd.push({ _id: post._id, author: user.username, text: post.text, createdAt: post.createdAt });
+            }
+
+            postsToReturn = postsToReturn.concat(toAdd)
+        }
+
+    }
+    return postsToReturn;
 }
-
-
 userSchema.pre('save', async function(next) {
     const user = this;
 

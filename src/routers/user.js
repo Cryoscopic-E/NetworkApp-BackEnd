@@ -8,7 +8,7 @@ const router = new express.Router();
 router.post('/signup', async (req, res) => {
     try {
         const user = new User(req.body);
-        //await user.save();
+        await user.save();
         const token = await user.generateAuthToken();
         res.status(201).send({ user, token });
     } catch (error) {

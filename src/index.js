@@ -12,6 +12,7 @@ const port = process.env.PORT || 4000;
 
 //SETUP ROUTERS
 const userRouter = require('./routers/user');
+const postRouter = require('./routers/post')
 
 //CORS MIDDLEWARE
 social_app.use(express.json());
@@ -23,7 +24,7 @@ social_app.use(function(req, res, next) {
 });
 
 social_app.use(userRouter);
-
+social_app.use(postRouter);
 
 // CREATE SERVER
 const server = http.createServer(social_app);
@@ -42,6 +43,16 @@ io.on('connection', (socket) => {
 
     socket.on('newMessage', ({ message, from, room }) => {
         io.to(room).emit('message', { message, from });
+    })
+
+    socket.on('newPost', ({ post, room }) => {
+        console.log("new post")
+        io.to(room).emit('post', { post });
+    })
+
+    socket.on('removePost', ({ id, room }) => {
+        console.log("new post")
+        io.to(room).emit('postRemoved', { id });
     })
 
     socket.on('drawing', ({ room, from, to }) => {

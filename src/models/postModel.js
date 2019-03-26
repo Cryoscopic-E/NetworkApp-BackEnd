@@ -9,7 +9,7 @@ const postSchema = mongoose.Schema({
     image: {
         type: Buffer
     },
-    owner: {
+    creator: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
