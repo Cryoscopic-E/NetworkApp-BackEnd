@@ -117,7 +117,7 @@ userSchema.statics.getPostsFromProject = async (project) => {
         if (user.posts.length > 0) {
             let toAdd = []
             for (let post of user.posts) {
-                toAdd.push({ _id: post._id, author: user.username, text: post.text, createdAt: post.createdAt });
+                toAdd.push({ _id: post._id, author: user.username, text: post.text, image: post.image, createdAt: post.createdAt });
             }
 
             postsToReturn = postsToReturn.concat(toAdd)
