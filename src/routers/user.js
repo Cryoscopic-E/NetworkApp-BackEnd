@@ -13,7 +13,7 @@ router.post('/signup', async (req, res) => {
         res.status(201).send({ user, token });
     } catch (error) {
         console.log(error);
-        res.status(400).send(e);
+        res.status(400).send(error.message);
     }
 });
 
@@ -24,7 +24,8 @@ router.post('/login', async (req, res) => {
         const token = await user.generateAuthToken();
         res.send({ user, token });
     } catch (error) {
-        res.status(400).send();
+        console.log(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -34,14 +35,13 @@ router.get('/myprofile', authenticate, async (req, res) => {
 });
 
 // LOGOUT
-
 router.post('/logout', authenticate, async (req, res) => {
     try {
         req.user.tokens = [];
         await req.user.save();
         res.send({ status: "logout" });
     } catch (error) {
-        res.status(500).send();
+        res.status(500).send(error.message);
     }
 });
 
