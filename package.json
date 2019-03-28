@@ -3,9 +3,13 @@
     "version": "0.0.1",
     "description": "Backend for network applications coursework",
     "main": "src/index.js",
+    "engines": {
+        "node": "11.12.0"
+    },
     "scripts": {
         "start": "node src/index.js",
-        "dev": "env-cmd ./config/dev.env nodemon src/index.js"
+        "dev": "env-cmd ./config/dev.env nodemon src/index.js",
+
     },
     "repository": {
         "type": "git",
