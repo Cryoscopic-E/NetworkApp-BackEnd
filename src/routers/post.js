@@ -24,14 +24,22 @@ const imageUpload = multer({
 //ADD POST
 router.post('/createPost', imageUpload.single('image'), authetication, async (req, res) => {
 
-    const buffer = await sharp(req.file.buffer).png().toBuffer();
-    console.log(buffer)
+    let post = {}
+    if (req.file) {
+        const buffer = await sharp(req.file.buffer).png().toBuffer();
 
-    const post = new Post({
-        image: buffer,
-        text: req.body.text,
-        creator: req.user._id
-    })
+        post = new Post({
+            image: buffer,
+            text: req.body.text,
+            creator: req.user._id
+        })
+    } else {
+        post = new Post({
+            text: req.body.text,
+            creator: req.user._id
+        })
+    }
+
 
     try {
         await post.save()
@@ -42,18 +50,13 @@ router.post('/createPost', imageUpload.single('image'), authetication, async (re
 })
 
 //FETCH POSTS IN PROJECT
-//?limit=x&skip=y
-//?sortby=createdAt:desc|asc
 router.get('/getPosts', authetication, async (req, res) => {
 
-    const sort = {}
-    if (req.query.sortBy) {
-        const parts = req.query.sortBy.split(':')
-        sort[parts[0]] = (parts[1] === 'desc') ? -1 : 1;
-    }
-
     try {
-        const posts = await User.getPostsFromProject(req.user.project)
+        let posts = await User.getPostsFromProject(req.user.project)
+        posts.sort((a, b) => {
+            return (a.createdAt > b.createdAt) ? -1 : 1
+        })
         res.send(posts);
     } catch (error) {
         return res.status(500).send()

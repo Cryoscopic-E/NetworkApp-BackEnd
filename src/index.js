@@ -45,9 +45,8 @@ io.on('connection', (socket) => {
         io.to(room).emit('message', { message, from });
     })
 
-    socket.on('newPost', ({ post, room }) => {
-        console.log("new post")
-        io.to(room).emit('post', { post });
+    socket.on('newPost', ({ post, author, avatar, room }) => {
+        io.to(room).emit('post', { post, author, avatar });
     })
 
     socket.on('removePost', ({ id, room }) => {

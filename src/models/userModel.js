@@ -72,7 +72,6 @@ userSchema.methods.toJSON = function() {
     const userObj = this.toObject();
     delete userObj.password;
     delete userObj.token;
-    delete userObj.avatar;
     return userObj;
 }
 
@@ -90,7 +89,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
     if (!isMatch) {
         throw new Error('Unable to login');
     }
-
     return user;
 
 };
@@ -117,7 +115,7 @@ userSchema.statics.getPostsFromProject = async (project) => {
         if (user.posts.length > 0) {
             let toAdd = []
             for (let post of user.posts) {
-                toAdd.push({ _id: post._id, author: user.username, text: post.text, image: post.image, createdAt: post.createdAt });
+                toAdd.push({ _id: post._id, author: user.username, avatar: user.avatar, text: post.text, image: post.image, createdAt: post.createdAt });
             }
 
             postsToReturn = postsToReturn.concat(toAdd)
@@ -128,7 +126,6 @@ userSchema.statics.getPostsFromProject = async (project) => {
 }
 userSchema.pre('save', async function(next) {
     const user = this;
-
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8);
     }
