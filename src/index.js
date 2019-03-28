@@ -8,7 +8,7 @@ const social_app = express();
 
 const { getOnlineUsersInProjectRoom } = require('./utils/userUtils');
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT;
 
 //SETUP ROUTERS
 const userRouter = require('./routers/user');

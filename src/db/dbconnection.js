@@ -1,6 +1,6 @@
 const moongoose = require('mongoose');
 
-moongoose.connect('mongodb://127.0.0.1/na-backend', {
+moongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false
