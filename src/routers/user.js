@@ -43,7 +43,7 @@ router.post('/signup', imageUpload.single('avatar'), async (req, res) => {
         res.status(201).send(user);
     } catch (error) {
         console.log(error);
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -65,14 +65,13 @@ router.get('/myprofile', authenticate, async (req, res) => {
 });
 
 // LOGOUT
-
 router.post('/logout', authenticate, async (req, res) => {
     try {
         req.user.tokens = [];
         await req.user.save();
         res.send({ status: "logout" });
     } catch (error) {
-        res.status(500).send();
+        res.status(500).send(error.message);
     }
 });
 
